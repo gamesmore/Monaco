@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roblox Lua Monaco Editor</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.39.0/min/vs/loader.js"></script>
+    <style>
+        html, body { height: 100%; margin: 0; }
+        #editor { width: 100%; height: 100vh; }
+    </style>
+</head>
+<body>
+    <div id="editor"></div>
+    <script>
+        require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.39.0/min/vs' } });
+        require(['vs/editor/editor.main'], function () {
+            monaco.languages.register({ id: 'roblox-lua' });
+            
+            monaco.languages.setMonarchTokensProvider('roblox-lua', {
+                tokenizer: {
+                    root: [
+                        [/\b(and|break|do|else|elseif|end|false|for|function|if|in|local|nil|not|or|repeat|return|then|true|until|while)\b/, 'keyword'],
+                        [/\b(game|workspace|script|Instance|Vector3|CFrame|Color3|BrickColor|Enum|UserInputService|RunService|Players|Lighting|TweenService|GuiService|HttpService|ReplicatedStorage|SoundService|Debris)\b/, 'class'],
+                        [/\b(Mouse|Camera|Humanoid|BasePart|Part|Model|MeshPart|SurfaceGui|ScreenGui|TextLabel|TextButton|Frame|ImageLabel|ImageButton)\b/, 'ui'],
+                        [/\b(MouseButton1Click|MouseButton2Click|Touched|Activated|Changed|Parent|ChildAdded|ChildRemoved|FindFirstChild|FindFirstChildOfClass|FindFirstChildWhichIsA|GetChildren|GetDescendants|IsA|Clone|Destroy)\b/, 'method'],
+                        [/\b(print|warn|require|math\.\w+|table\.\w+|string\.\w+|utf8\.\w+|os\.\w+|coroutine\.\w+|debug\.\w+|task\.\w+|tick|time|wait|spawn|delay|pcall|xpcall|pairs|ipairs|next|select|getfenv|setfenv|getmetatable|setmetatable|rawget|rawset|rawequal|type|assert|error|tostring|tonumber)\b/, 'function'],
+                        [/"(.*?)"/, 'string'],
+                        [/'(.*?)'/, 'string'],
+                        [/--\[\[.*?\]\]/, 'comment'],
+                        [/--.*/, 'comment'],
+                        [/\b\d+\b/, 'number']
+                    ]
+                }
+            });
+            
+            const robloxKeywords = [
+                'game', 'workspace', 'script', 'Instance', 'Vector3', 'CFrame', 'Color3', 'BrickColor', 'Enum', 'UserInputService', 'RunService', 'Players',
+                'Lighting', 'TweenService', 'GuiService', 'HttpService', 'ReplicatedStorage', 'SoundService', 'Debris', 'Mouse', 'Camera', 'Humanoid',
+                'BasePart', 'Part', 'Model', 'MeshPart', 'SurfaceGui', 'ScreenGui', 'TextLabel', 'TextButton', 'Frame', 'ImageLabel', 'ImageButton',
+                'MouseButton1Click', 'MouseButton2Click', 'Touched', 'Activated', 'Changed', 'Parent', 'ChildAdded', 'ChildRemoved', 'FindFirstChild',
+                'FindFirstChildOfClass', 'FindFirstChildWhichIsA', 'GetChildren', 'GetDescendants', 'IsA', 'Clone', 'Destroy',
+                'print', 'warn', 'require', 'math', 'table', 'string', 'utf8', 'os', 'coroutine', 'debug', 'task', 'tick', 'time', 'wait', 'spawn', 'delay',
+                'pcall', 'xpcall', 'pairs', 'ipairs', 'next', 'select', 'getfenv', 'setfenv', 'getmetatable', 'setmetatable', 'rawget', 'rawset', 'rawequal',
+                'type', 'assert', 'error', 'tostring', 'tonumber'
+            ];
+            
+            monaco.languages.registerCompletionItemProvider('roblox-lua', {
+                provideCompletionItems: function () {
+                    const suggestions = robloxKeywords.map(keyword => ({
+                        label: keyword,
+                        kind: monaco.languages.CompletionItemKind.Keyword,
+                        insertText: keyword
+                    }));
+                    return { suggestions: suggestions };
+                }
+            });
+            
+            monaco.editor.defineTheme('roblox-studio', {
+                base: 'vs-dark',
+                inherit: true,
+                rules: [
+                    { token: 'keyword', foreground: '569CD6' },
+                    { token: 'class', foreground: '4EC9B0' },
+                    { token: 'ui', foreground: 'D16969' },
+                    { token: 'method', foreground: 'DCDCAA' },
+                    { token: 'function', foreground: 'C586C0' },
+                    { token: 'string', foreground: 'CE9178' },
+                    { token: 'comment', foreground: '6A9955' },
+                    { token: 'number', foreground: 'B5CEA8' }
+                ],
+                colors: {
+                    'editor.foreground': '#D4D4D4',
+                    'editor.background': '#1E1E1E',
+                    'editor.selectionBackground': '#264F78',
+                    'editor.lineHighlightBackground': '#333333',
+                    'editorCursor.foreground': '#FFFFFF',
+                    'editorWhitespace.foreground': '#606060'
+                }
+            });
+            
+            monaco.editor.create(document.getElementById('editor'), {
+                value: '-- Roblox Lua Editor',
+                language: 'roblox-lua',
+                theme: 'roblox-studio',
+                automaticLayout: true
+            });
+        });
+    </script>
+</body>
+</html>
