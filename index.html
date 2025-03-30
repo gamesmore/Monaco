@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Roblox Lua Monaco Editor</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.39.0/min/vs/loader.js"></script>
+    <script src="Script.js"></script>
     <style>
         html, body { height: 100%; margin: 0; }
         #editor { width: 100%; height: 100vh; }
@@ -13,7 +13,7 @@
 <body>
     <div id="editor"></div>
     <script>
-        require.config({ paths: { 'vs': 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.39.0/min/vs' } });
+        require.config({ paths: { 'vs': 'Script.js' } });
         require(['vs/editor/editor.main'], function () {
             monaco.languages.register({ id: 'roblox-lua' });
             
